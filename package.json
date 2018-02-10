@@ -1,0 +1,17 @@
+{
+  "name": "redis-app",
+  "version": "1.0.0",
+  "description": "Redis client example",
+  "main": "app.js",
+  "dependencies": {
+    "express": "^4.16.2",
+    "random-float": "^1.0.0",
+    "redis": "^2.8.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": ""
+  },
+  "author": "Talgat Nesipbayiev",
+  "license": "ISC"
+}
