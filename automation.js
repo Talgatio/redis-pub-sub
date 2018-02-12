@@ -1,12 +1,12 @@
 const redis = require("redis");
 const pub = redis.createClient();
 const sub = redis.createClient();
+const time = require('./time');
 
 let previousData = [];
 let ids = [];
 sub.on('message', (ch, message) => {
     let msg = JSON.parse(message);
-
     //Unique array of id
     if (ids.indexOf(msg.id) === -1) {
         ids.push(msg.id);
@@ -20,19 +20,23 @@ sub.on('message', (ch, message) => {
             }
         });
 
-        let memoryUsage = process.memoryUsage();
+        msg.memoryUsage = process.memoryUsage().heapUsed;
 
         if (prev.y > 0) {
             if (prev.y < msg.y) {
-                pub.publish('automation', `${JSON.stringify(msg.id)} with ind: ${ind} Move Up, memory: ${memoryUsage.heapUsed} kbs`)
+                msg.way = 'Up';
+                pub.publish('automation', JSON.stringify(msg));
             } else {
-                pub.publish('automation', `${JSON.stringify(msg.id)} with ind: ${ind} Move Down, memory: ${memoryUsage.heapUsed} kbs`)
+                msg.way = 'Down';
+                pub.publish('automation', JSON.stringify(msg));
             }
         } else {
             if (prev.y > msg.y) {
-                pub.publish('automation', `${JSON.stringify(msg.id)} with ind: ${ind} Move Up, memory: ${memoryUsage.heapUsed} kbs`)
+                msg.way = 'Down';
+                pub.publish('automation', JSON.stringify(msg));
             } else {
-                pub.publish('automation', `${JSON.stringify(msg.id)} with ind: ${ind} Move Down, memory: ${memoryUsage.heapUsed} kbs`)
+                msg.way = 'Up';
+                pub.publish('automation', JSON.stringify(msg));
             }
         }
         previousData[ind] = msg;

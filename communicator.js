@@ -3,6 +3,7 @@ const pub = redis.createClient();
 const sub = redis.createClient();
 const cacheManager = require('cache-manager');
 var redisStore = require('cache-manager-redis');
+let time = require('./time');
 
 var redisCache = cacheManager.caching({
     store: redisStore,
@@ -12,8 +13,7 @@ var redisCache = cacheManager.caching({
     ttl: 600
 });
 
-
-let labelWithTime;
+let lable;
 let ids = [
     {
         id: '5a256e1221049d143cd6b385',
@@ -53,6 +53,7 @@ let ids = [
 ];
 let count = 0;
 let setRadomPosition = setInterval(() => {
+
     ids.forEach((item, i) => {
         //Upward movement
         if (i % 2 === 0) {
@@ -67,17 +68,22 @@ let setRadomPosition = setInterval(() => {
             item.z = (item.z + 0.005);
             item.timeStamp = Date.now();
         }
-        labelWithTime = 'label' + Date.now();
-        console.time(labelWithTime);
 
+
+        console.time(item.id);
         pub.publish('communicator', JSON.stringify(item));
 
+
     });
+
 }, 2000);
 
 sub.on('message', (ch, message) => {
-    console.timeEnd(labelWithTime)
+    console.log('==============');
+    console.timeEnd(JSON.parse(message).id);
     console.log(message);
+    console.log('==============');
+
 })
 
 sub.subscribe("automation");
