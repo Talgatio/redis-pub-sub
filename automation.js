@@ -1,7 +1,6 @@
 const redis = require("redis");
 const pub = redis.createClient();
 const sub = redis.createClient();
-const time = require('./time');
 
 let previousData = [];
 let ids = [];
