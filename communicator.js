@@ -1,19 +1,8 @@
 const redis = require("redis");
 const pub = redis.createClient();
 const sub = redis.createClient();
-const cacheManager = require('cache-manager');
-var redisStore = require('cache-manager-redis');
 let time = require('./time');
 
-var redisCache = cacheManager.caching({
-    store: redisStore,
-    host: 'localhost', // default value
-    port: 6379, // default value
-    db: 0,
-    ttl: 600
-});
-
-let lable;
 let ids = [
     {
         id: '5a256e1221049d143cd6b385',
@@ -51,7 +40,7 @@ let ids = [
         timeStamp: Date.now()
     }
 ];
-let count = 0;
+
 let setRadomPosition = setInterval(() => {
 
     ids.forEach((item, i) => {
